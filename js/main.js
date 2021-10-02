@@ -46,14 +46,14 @@ function loop() {
     data.ball.x+=data.ball.dx;
     data.ball.y+=data.ball.dy;
 
-    //проверяем, чтобы шарик не уезжал за границы платформы
+    //проверяем, чтобы шарик не уезжал за границы карты
 
     if (data.ball.x < data.wallSize) {
         data.ball.x = data.wallSize;
         data.ball.dx *= -1;
     }
     else if (data.ball.x > data.canvas.width-data.wallSize) {
-        data.ball.x = data.canvas.width-data.wallSize;
+        data.ball.x = data.canvas.width-data.wallSize-data.ball.width;
         data.ball.dx *= -1;
     }
 
