@@ -1,6 +1,12 @@
+@font-face {
+    font-family: Pixelar;
+    src: url(../assets/fonts/Pixelar.ttf);
+}
+
 html, body {
     margin: 0;
     width: 100%;
+    position: relative;
 }
 
 body {
@@ -8,4 +14,53 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.title {
+    display: inline;
+    width: 100%;
+    height: 150px;
+    position: absolute;
+    top: 500px;
+    left: 0;
+    text-align: center;
+    font-size: 150px;
+    color: red;
+    line-height: 150px;
+    font-family: Pixelar;
+    text-shadow: -3px -3px 0 white, 3px -3px 0 white, -3px 3px 0 white, 3px 3px 0 white;
+    letter-spacing: .2em;
+    animation: upDown 1s linear infinite;
+    transition: 0s;
+}
+
+.title em.upper {
+    color: rgb(62, 252, 62);
+    font-style: normal;
+    vertical-align: 15px;
+}
+
+.title em.lower {
+    color: yellow;
+    font-style: normal;
+    vertical-align: -40px;
+}
+
+.title em.semi-lower {
+    
+    font-style: normal;
+    vertical-align: -20px;
+    color: orange;
+}
+
+@keyframes upDown {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
 }
