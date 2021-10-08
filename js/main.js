@@ -1,14 +1,17 @@
 import * as data from "./data.js";
 import collide from "./objectsIntersection.js";
 
+let paddleSpeedIncreesingCoef = 1.03;
+let ballSpeedIncreesingCoef = 1.05;
+let k = 0;
 //нажатие на клавиши
 document.addEventListener("keydown", function(e) {
     if (e.which==37) {
-        data.paddle.dx = -3;
+        data.paddle.dx = -3*(paddleSpeedIncreesingCoef**k);
     }
 
     else if(e.which==39) {
-        data.paddle.dx = 3;
+        data.paddle.dx = 3*(paddleSpeedIncreesingCoef**k);
     }
 
     else if(data.ball.dx==0 && data.ball.dy==0 && e.which==32) {
@@ -46,13 +49,13 @@ function loop() {
     data.ball.x+=data.ball.dx;
     data.ball.y+=data.ball.dy;
 
-    //проверяем, чтобы шарик не уезжал за границы карты
+    //проверяем, чтобы шарик не уезжал за границы платформы
 
-    if (data.ball.x < data.wallSize) {
+    if (data.ball.x <= data.wallSize) {
         data.ball.x = data.wallSize;
         data.ball.dx *= -1;
     }
-    else if (data.ball.x > data.canvas.width-data.wallSize) {
+    else if (data.ball.x >= data.canvas.width-data.wallSize) {
         data.ball.x = data.canvas.width-data.wallSize-data.ball.width;
         data.ball.dx *= -1;
     }
@@ -67,6 +70,7 @@ function loop() {
         data.ball.y = 260;
         data.ball.dx = 0;
         data.ball.dy = 0;
+        k = 0;
     }
 
     //пересечение с платформой
@@ -91,9 +95,12 @@ function loop() {
 
             if (data.ball.y+data.ball.height-data.ball.speed <= tempBrick.y ||
                 data.ball.y >= tempBrick.y + tempBrick.height - data.ball.speed) {
-                    data.ball.dy *= -1;
+                    data.ball.dy *= -ballSpeedIncreesingCoef;
+                    k+=1;
+                    
             } else {
-                data.ball.dx *= -1;
+                data.ball.dx *= -ballSpeedIncreesingCoef;
+                k+=1;
             }
 
             break;
