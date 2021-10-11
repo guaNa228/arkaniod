@@ -3,6 +3,8 @@
     src: url(../assets/fonts/Pixelar.ttf);
 }
 
+
+
 html, body {
     margin: 0;
     width: 100%;
@@ -14,6 +16,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 .title {
@@ -62,5 +65,32 @@ body {
     }
     100% {
         transform: translateY(0px);
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .title {
+        font-size: 20vw;
+    }
+}
+
+span.description {
+    font-size: 24px;
+    font-family: Pixelar;
+    color: white;
+    display: none;
+    position: absolute;
+    top: 50vh;
+    left: 50vw;
+    transform: translate(-50%, -50%);
+}
+
+@media screen and (max-width: 400px) {
+    span.description {
+        display: block;
+    }
+
+    canvas {
+        display: none;
     }
 }
