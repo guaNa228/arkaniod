@@ -4,6 +4,9 @@ import collide from "./objectsIntersection.js";
 let paddleSpeedIncreesingCoef = 1.03;
 let ballSpeedIncreesingCoef = 1.05;
 let k = 0;
+
+const resultScreen = document.querySelector(".result");
+
 //нажатие на клавиши
 document.addEventListener("keydown", function(e) {
     if (e.which==37) {
@@ -90,8 +93,16 @@ function loop() {
 
         if (collide(tempBrick, data.ball)) {
 
+            
             data.bricks.splice(i, 1);
 
+            if (data.bricks.length==0) {
+                resultScreen.classList.toggle("active");
+                data.ball.x = 130;
+                data.ball.y = 260;
+                data.ball.dx = 0;
+                data.ball.dy = 0;
+            }
 
             if (data.ball.y+data.ball.height-data.ball.speed <= tempBrick.y ||
                 data.ball.y >= tempBrick.y + tempBrick.height - data.ball.speed) {
