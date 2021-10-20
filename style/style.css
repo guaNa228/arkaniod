@@ -3,6 +3,8 @@
     src: url(../assets/fonts/Pixelar.ttf);
 }
 
+
+
 html, body {
     margin: 0;
     width: 100%;
@@ -14,6 +16,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 .title {
@@ -63,4 +66,73 @@ body {
     100% {
         transform: translateY(0px);
     }
+}
+
+@keyframes resultScreenFall {
+    0% {
+        top: -500px;
+    }
+    65% {
+        top: 40px;
+    }
+    75% {
+        top: -80px;
+    }
+    100% {
+        top: 0px;
+    }
+    
+}
+
+@media screen and (max-width: 700px) {
+    .title {
+        font-size: 20vw;
+    }
+}
+
+span.description {
+    font-size: 24px;
+    font-family: Pixelar;
+    color: white;
+    display: none;
+    position: absolute;
+    top: 50vh;
+    left: 50vw;
+    transform: translate(-50%, -50%);
+}
+
+@media screen and (max-width: 400px) {
+    span.description {
+        display: block;
+    }
+
+    canvas {
+        display: none;
+    }
+}
+
+.result {
+    position: absolute;
+    width: 400px;
+    height: 500px;
+    top: -500px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: green;
+    opacity: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;  
+}
+
+.result span {
+    font-size: 36px;
+    color: white;
+    font-family: Pixelar;
+}
+
+.result.active {
+    top: 0px;
+    animation: resultScreenFall 1.2s ease-out;
+    
 }
