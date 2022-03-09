@@ -38,8 +38,8 @@ export const wallSize = 12;
 //Шарик для игры
 export const ball = {
     // стартовые координаты шарика
-    x: 130,
-    y: 260,
+    x: 12+Math.random()*376,
+    y: 210+Math.random()*40,
     // высота и ширина шарика
     width: 5,
     height: 5,
@@ -66,24 +66,33 @@ export const paddle = {
   };
 
 //игровой массив с оставшимися кирпичами
-export const bricks = [];
+export let bricks;
 
+export let height = level1.length;
+export let width = level1[height - 1].length; 
 
 let colorCodeTemp;
 
-for (let row = 0; row < level1.length; row++) {
-    for (let column = 0; column < level1[row].length; column++) {
-
-        colorCodeTemp = level1[row][column];
-
-        bricks.push({
-            x: wallSize + (brickWidth + brickGap)*column,
-            y: wallSize + (brickHeight + brickGap) * row,
-            width: brickWidth,
-            height: brickHeight,
-            color: colorMap[colorCodeTemp]
-        });
-
+export function resetGame() {
+    bricks = [];
+    for (let row = 0; row < level1.length; row++) {
+        for (let column = 0; column < level1[row].length; column++) {
+    
+            colorCodeTemp = level1[row][column];
+    
+            bricks.push({
+                x: wallSize + (brickWidth + brickGap)*column,
+                y: wallSize + (brickHeight + brickGap) * row,
+                width: brickWidth,
+                height: brickHeight,
+                color: colorMap[colorCodeTemp]
+            });
+    
+        }
     }
+
+    console.log(bricks);
+    
 }
+
 

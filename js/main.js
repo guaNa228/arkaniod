@@ -1,12 +1,15 @@
 import * as data from "./data.js";
 import collide from "./objectsIntersection.js";
 
+//переменные игры
+//let records = localStorage.getItem('records') || {};
 let paddleSpeedIncreesingCoef = 1.03;
 let ballSpeedIncreesingCoef = 1.05;
 let k = 0;
-
-const resultScreen = document.querySelector(".result");
-
+let score = 0;
+let defaultScore;
+let gameTimer = 0;
+var gameTimerInterval;
 //нажатие на клавиши
 document.addEventListener("keydown", function(e) {
     if (e.which==37) {
@@ -20,12 +23,14 @@ document.addEventListener("keydown", function(e) {
     else if(data.ball.dx==0 && data.ball.dy==0 && e.which==32) {
         data.ball.dx = data.ball.speed;
         data.ball.dy = data.ball.speed;
+        gameTimerInterval = setInterval(timerIncrement, 1000);
     }
+
+    console.log(data.paddle.dx);
 });
 
 document.addEventListener("keyup", function(e) {
     if (e.which==37 || e.which==39) {
-        console.log(1);
         data.paddle.dx = 0;
     }
 });
@@ -69,11 +74,12 @@ function loop() {
     }
 
     if (data.ball.y > data.canvas.height) {
-        data.ball.x = 130;
-        data.ball.y = 260;
+        data.ball.x = 12+Math.random()*376;
+        data.ball.y = 210+Math.random()*40;
         data.ball.dx = 0;
         data.ball.dy = 0;
         k = 0;
+        clearInterval(gameTimerInterval);
     }
 
     //пересечение с платформой
@@ -93,16 +99,8 @@ function loop() {
 
         if (collide(tempBrick, data.ball)) {
 
-            
             data.bricks.splice(i, 1);
 
-            if (data.bricks.length==0) {
-                resultScreen.classList.toggle("active");
-                data.ball.x = 130;
-                data.ball.y = 260;
-                data.ball.dx = 0;
-                data.ball.dy = 0;
-            }
 
             if (data.ball.y+data.ball.height-data.ball.speed <= tempBrick.y ||
                 data.ball.y >= tempBrick.y + tempBrick.height - data.ball.speed) {
@@ -110,10 +108,12 @@ function loop() {
                     k+=1;
                     
             } else {
-                data.ball.dx *= -ballSpeedIncreesingCoef;
+                data.ball.dx = -ballSpeedIncreesingCoef;
                 k+=1;
             }
-
+            console.log(data.ball.dx, data.ball.dy);
+            score+=1;
+            scoreDisplay();
             break;
 
         }
@@ -145,4 +145,40 @@ function loop() {
 
 }
 
+//счёт и таймер отрисовка
+
+let scoreTitle = document.querySelector('.scoreTitle span');
+let timerTitle = document.querySelector('.timeTitle span')
+function scoreDisplay() {
+    let scoreCalculated = `${score}/${defaultScore}`;
+    scoreTitle.textContent = scoreCalculated;
+}
+
+function timerIncrement() {
+    gameTimer+=1;
+    let timerTitleMinutes = `${Math.floor(gameTimer/60)}`;
+    let timerTitleSeconds = `${gameTimer%60}`;
+    timerTitleMinutes = timerTitleMinutes<10 ? '0'+timerTitleMinutes : timerTitleMinutes;
+    timerTitleSeconds = timerTitleSeconds<10 ? '0'+timerTitleSeconds : timerTitleSeconds;
+    timerTitle.textContent = `${timerTitleMinutes}:${timerTitleSeconds}`;
+}
+
+
+
+
+//ресет игры
+function reset() {
+    data.ball.y = data.canvas.height+1;
+    score = 0;
+    gameTimer = 0;
+    data.resetGame();
+    defaultScore = data.bricks.length;
+    scoreDisplay();
+    timerTitle.textContent = '00:00';
+}
+let resetGameButton = document.querySelector('.resetBtn');
+resetGameButton.addEventListener('click', reset);
+
+
+reset();
 requestAnimationFrame(loop);

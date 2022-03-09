@@ -3,12 +3,11 @@
     src: url(../assets/fonts/Pixelar.ttf);
 }
 
-
-
 html, body {
     margin: 0;
     width: 100%;
     position: relative;
+    font-family: Pixelar;
 }
 
 body {
@@ -16,7 +15,86 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
+}
+
+.game {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.game .score {
+    width: 250px;
+    margin-right: 100px;
+    font-size: 40px;
+}
+
+.game .score p {
+    margin: 0;
+}
+
+.game .score p:first-child {
+    margin-bottom: 30px;
+}
+
+.game .settings {
+    width: 250px;
+    margin-top: 40px;
+    margin-left: 100px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.game .settings .rowsRegulation img{
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
+img.resetBtn {
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    
+}
+
+.settings .resetGame {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 50px;
+}
+
+.settings .resetGame p {
+    font-size: 30px;
+}
+
+.rowsRegulation {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.rowsRegulation p {
+    font-size: 30px;
+}
+
+.rowsRegulation .keys {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.rowsRegulation .keys span {
+    font-size: 50px;
+}
+
+canvas {
+    margin: 0px 50px;
 }
 
 .title {
@@ -66,73 +144,4 @@ body {
     100% {
         transform: translateY(0px);
     }
-}
-
-@keyframes resultScreenFall {
-    0% {
-        top: -500px;
-    }
-    65% {
-        top: 40px;
-    }
-    75% {
-        top: -80px;
-    }
-    100% {
-        top: 0px;
-    }
-    
-}
-
-@media screen and (max-width: 700px) {
-    .title {
-        font-size: 20vw;
-    }
-}
-
-span.description {
-    font-size: 24px;
-    font-family: Pixelar;
-    color: white;
-    display: none;
-    position: absolute;
-    top: 50vh;
-    left: 50vw;
-    transform: translate(-50%, -50%);
-}
-
-@media screen and (max-width: 400px) {
-    span.description {
-        display: block;
-    }
-
-    canvas {
-        display: none;
-    }
-}
-
-.result {
-    position: absolute;
-    width: 400px;
-    height: 500px;
-    top: -500px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: green;
-    opacity: 70%;
-    display: flex;
-    justify-content: center;
-    align-items: center;  
-}
-
-.result span {
-    font-size: 36px;
-    color: white;
-    font-family: Pixelar;
-}
-
-.result.active {
-    top: 0px;
-    animation: resultScreenFall 1.2s ease-out;
-    
 }

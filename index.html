@@ -8,17 +8,31 @@
     <link rel="stylesheet" href="style/style.css">
 </head>
 <body>
-
-<div class="result">
-    <span>mha, YOU WON!</span>
-</div>
-<span class="description">You can't play arkanoid from this device(</span>
-<canvas width="400" height="500" id="game"></canvas>
-    
-
-<div class="title">
-    <em class="lower">A</em>r<em class="upper">k</em>a<em class="semi-lower">n</em><em class="lower">o</em><em class="semi-lower">i</em>d
-</div>
+    <div class="game">
+        <div class="score">
+            <p class="scoreTitle">SCORE: <span>0/112</span></p>
+            <p class="timeTitle">TIME: <span>00:00</span></p>
+        </div>
+        <canvas width="400" height="500" id="game"></canvas>
+        <div class="settings">
+            <div class="resetGame">
+                <p>Reset game:</p>
+                <img class="resetBtn" src="assets/icons/reset.png" alt="">
+            </div>
+            <div class="rowsRegulation">
+                <p>Number of rows:</p>
+                <div class="keys">
+                    <img src="assets/icons/up.png" alt="">
+                    <span>8</span>
+                    <img src="assets/icons/down.png" alt="">
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="title">
+        <em class="lower">A</em>r<em class="upper">k</em>a<em class="semi-lower">n</em><em class="lower">o</em><em class="semi-lower">i</em>d
+    </div>
 <script type="module" src="js/main.js"></script>
 </body>
 </html>
