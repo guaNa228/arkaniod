@@ -10,6 +10,8 @@ let score = 0;
 let defaultScore;
 let gameTimer = 0;
 var gameTimerInterval;
+let gameRowsGlobal = parseInt(localStorage.getItem('rows')) || 8;
+console.log(gameRowsGlobal);
 //нажатие на клавиши
 document.addEventListener("keydown", function(e) {
     if (e.which==37) {
@@ -101,17 +103,24 @@ function loop() {
 
             data.bricks.splice(i, 1);
 
-
-            if (data.ball.y+data.ball.height-data.ball.speed <= tempBrick.y ||
-                data.ball.y >= tempBrick.y + tempBrick.height - data.ball.speed) {
-                    data.ball.dy *= -ballSpeedIncreesingCoef;
+            if (k<=30) {
+                if (data.ball.y+data.ball.height-data.ball.speed <= tempBrick.y ||
+                    data.ball.y >= tempBrick.y + tempBrick.height - data.ball.speed) {
+                        data.ball.dy *= -ballSpeedIncreesingCoef;
+                        k+=1;
+                } else {
+                    data.ball.dx *= -ballSpeedIncreesingCoef;
                     k+=1;
-                    
+                }
             } else {
-                data.ball.dx = -ballSpeedIncreesingCoef;
-                k+=1;
+                if (data.ball.y+data.ball.height-data.ball.speed <= tempBrick.y ||
+                    data.ball.y >= tempBrick.y + tempBrick.height - data.ball.speed) {
+                        data.ball.dy*=-1;
+                } else {
+                    data.ball.dx*=-1;
+                }
             }
-            console.log(data.ball.dx, data.ball.dy);
+            //console.log(data.ball.dx, data.ball.dy);
             score+=1;
             scoreDisplay();
             break;
@@ -163,22 +172,53 @@ function timerIncrement() {
     timerTitle.textContent = `${timerTitleMinutes}:${timerTitleSeconds}`;
 }
 
+//Сохранить параметры игры
+
+function saveSettings() {
+    localStorage.setItem('rows', gameRowsGlobal.toString());
+}
+
+//Регуляровка рядов
+
+let rowsUpButton = document.querySelector('img.rowsIncreaseBtn');
+let rowsDownButton = document.querySelector('img.rowsDecreaseBtn');
+let rowsTitle = document.querySelector('.rowsRegulation .keys span')
+function rowsUp() {
+    gameRowsGlobal = Math.min(data.height, gameRowsGlobal+1);
+    reset();
+}
+
+function rowsDown() {
+    gameRowsGlobal = Math.max(1, gameRowsGlobal-1);
+    reset();
+}
+
+function rowsTitleUpdate() {
+    rowsTitle.textContent = gameRowsGlobal;
+}
+
+rowsUpButton.addEventListener('click', rowsUp);
+rowsDownButton.addEventListener('click', rowsDown);
+
+//система рекордов
+
 
 
 
 //ресет игры
 function reset() {
-    data.ball.y = data.canvas.height+1;
+    data.ball.y = data.canvas.height+15;
     score = 0;
     gameTimer = 0;
-    data.resetGame();
+    data.resetGame(gameRowsGlobal);
     defaultScore = data.bricks.length;
+    rowsTitleUpdate();
     scoreDisplay();
     timerTitle.textContent = '00:00';
 }
 let resetGameButton = document.querySelector('.resetBtn');
 resetGameButton.addEventListener('click', reset);
 
-
 reset();
 requestAnimationFrame(loop);
+window.addEventListener('beforeunload', saveSettings)

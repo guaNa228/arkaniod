@@ -2,13 +2,13 @@ export const canvas = document.getElementById('game');
 export const context = canvas.getContext('2d');
 
 
-const level1 = [
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
+const level = [
+    ['P','P','P','P','P','P','P','P','P','P','P','P','P','P'],
+    ['P','P','P','P','P','P','P','P','P','P','P','P','P','P'],
+    ['B','B','B','B','B','B','B','B','B','B','B','B','B','B'],
+    ['B','B','B','B','B','B','B','B','B','B','B','B','B','B'],
+    ['C','C','C','C','C','C','C','C','C','C','C','C','C','C'],
+    ['C','C','C','C','C','C','C','C','C','C','C','C','C','C'],
     ['R','R','R','R','R','R','R','R','R','R','R','R','R','R'],
     ['R','R','R','R','R','R','R','R','R','R','R','R','R','R'],
     ['O','O','O','O','O','O','O','O','O','O','O','O','O','O'],
@@ -20,10 +20,13 @@ const level1 = [
 ];
 
 const colorMap = {
+    'P': 'purple',
+    'B': 'blue',
+    'C': 'cyan',
     'R': 'red',
     'O': 'orange',
     'G': 'green',
-    'Y': 'yellow'
+    'Y': 'yellow',
 };
 
 //расстояние между кирпичиками
@@ -68,17 +71,17 @@ export const paddle = {
 //игровой массив с оставшимися кирпичами
 export let bricks;
 
-export let height = level1.length;
-export let width = level1[height - 1].length; 
+export let height = level.length;
+export let width = level[height - 1].length; 
 
 let colorCodeTemp;
 
-export function resetGame() {
+export function resetGame(rows) {
     bricks = [];
-    for (let row = 0; row < level1.length; row++) {
-        for (let column = 0; column < level1[row].length; column++) {
+    for (let row = level.length - rows; row < level.length; row++) {
+        for (let column = 0; column < level[row].length; column++) {
     
-            colorCodeTemp = level1[row][column];
+            colorCodeTemp = level[row][column];
     
             bricks.push({
                 x: wallSize + (brickWidth + brickGap)*column,
