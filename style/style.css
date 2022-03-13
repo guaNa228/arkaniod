@@ -95,6 +95,7 @@ img.resetBtn {
 
 canvas {
     margin: 0px 50px;
+    /*background: url(../assets/nude/1.jpg);*/
 }
 
 .title {
@@ -134,6 +135,53 @@ canvas {
     color: orange;
 }
 
+.endScreen {
+    position: absolute;
+    width: 400px;
+    height: 500px;
+    top: -100%;
+    background: rgba(247, 35, 35, .7);
+    transition: .7s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.record {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+}
+
+img.recordIcon {
+    width: 30px;
+    margin-right: 10px;
+}
+
+.record span.animated {
+    animation: record .25s infinite;
+}
+
+img.endIcon {
+    width: 40%;
+}
+
+p.recordTitle {
+    font-size: 40px;
+    text-align: center;
+}
+
+p.recordDescription {
+    font-size: 22px;
+    max-width: 400px;
+    text-align: center;
+}
+
+.endScreen.active {
+    top: 0;
+}
+
 @keyframes upDown {
     0% {
         transform: translateY(0px);
@@ -143,5 +191,14 @@ canvas {
     }
     100% {
         transform: translateY(0px);
+    }
+}
+
+@keyframes record {
+    0% {
+        opacity: 0.2;
+    }
+    100% {
+        opacity: 1;
     }
 }

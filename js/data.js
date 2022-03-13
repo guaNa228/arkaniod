@@ -1,6 +1,12 @@
 export const canvas = document.getElementById('game');
 export const context = canvas.getContext('2d');
 
+export const recordsData = {
+    'bad': ['assets/icons/results/bad.png', 'BAD ONE', 'So bad! You are trash', 'rgba(247, 35, 35, .7)'],
+    'good': ['assets/icons/results/good.png', 'NICE ONE', 'It is okay, but not enough', 'rgba(221, 231, 28, .7)'],
+    'great': ['assets/icons/results/great.png', 'GREAT TRY', 'It is great, but you did not beat your record', 'rgba(46, 238, 48, .7)'],
+    'newRecord': ['assets/icons/results/record.png', 'WOW', 'You have beaten your record in this mode, but there is no limit to perfection', 'rgba(16, 14, 238, .7)']
+}
 
 const level = [
     ['P','P','P','P','P','P','P','P','P','P','P','P','P','P'],
