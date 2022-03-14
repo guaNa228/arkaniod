@@ -13,6 +13,10 @@ var gameTimerInterval;
 var gameRowsGlobal = parseInt(localStorage.getItem('rows')) || 8;
 var recordsGlobal = JSON.parse(localStorage.getItem('records')) || [100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000];
 var endScreen = document.querySelector('.endScreen');
+var ballTemp = [];
+var paddleTemp = [];
+var globalPaused = false;
+var ballInactive = true;
 console.log(gameRowsGlobal);
 //нажатие на клавиши
 document.addEventListener("keydown", function(e) {
@@ -28,12 +32,11 @@ document.addEventListener("keydown", function(e) {
         if (endScreen.classList.contains('active')) {
             reset(true);
         }
+        ballInactive = false;
         data.ball.dx = data.ball.speed;
         data.ball.dy = data.ball.speed;
         gameTimerInterval = setInterval(timerIncrement, 1000);
-    }
-
-    console.log(data.paddle.dx);
+    };
 });
 
 document.addEventListener("keyup", function(e) {
@@ -49,9 +52,15 @@ function loop() {
 
     data.context.clearRect(0, 0, data.canvas.width, data.canvas.height);
 
-    //перемещение платформы
-    data.paddle.x+=data.paddle.dx;
-    
+    if (!globalPaused) {
+        //перемещение платформы
+        data.paddle.x+=data.paddle.dx;
+        
+        //двигаем шарик
+        data.ball.x+=data.ball.dx;
+        data.ball.y+=data.ball.dy;
+    }
+
     //делаем, чтобы платформа не уезжала за границы игровой зоны
 
     if(data.paddle.x < data.wallSize) {
@@ -60,9 +69,7 @@ function loop() {
         data.paddle.x = data.canvas.width - data.wallSize - data.paddle.width;
     }
 
-    //двигаем шарик
-    data.ball.x+=data.ball.dx;
-    data.ball.y+=data.ball.dy;
+    
 
     //проверяем, чтобы шарик не уезжал за границы платформы
 
@@ -86,7 +93,9 @@ function loop() {
         data.ball.dx = 0;
         data.ball.dy = 0;
         k = 0;
+        ballInactive = true;
         clearInterval(gameTimerInterval);
+        console.log(ballInactive);
     }
 
     //пересечение с платформой
@@ -166,7 +175,7 @@ let scoreTitle = document.querySelector('.scoreTitle span');
 let timerTitle = document.querySelector('.timeTitle span')
 function scoreDisplay() {
     if (score==defaultScore) {
-        data.ball.y = data.canvas.height+15;
+        data.ball.y = 100000000;
         endScreenFillUp();
         openEndScreen();
         newRecord();
@@ -224,7 +233,7 @@ rowsDownButton.addEventListener('click', rowsDown);
 let recordTitle = document.querySelector('.record span');
 
 function recordDisplay(animated) {
-    recordTitle.textContent = getTimeForm(recordsGlobal[gameRowsGlobal-1]);
+    recordTitle.textContent = recordsGlobal[gameRowsGlobal-1]!=100000 ? getTimeForm(recordsGlobal[gameRowsGlobal-1]) : '—';
     if (animated) {
         recordTitle.classList.add('animated');
         setTimeout(() => {
@@ -283,6 +292,38 @@ function openEndScreen() {
 function closeEndScreen() {
     endScreen.classList.remove('active');
 }
+
+//game pause and start
+
+function pauseGame() {
+    ballTemp = [data.ball.dx, data.ball.dy];
+    paddleTemp = [data.paddle.dx, data.paddle.dy];
+    data.ball.dx, data.ball.dy, data.paddle.dx, data.paddle.dy = 0, 0, 0, 0;
+    globalPaused = true;
+    clearInterval(gameTimerInterval);
+}
+
+function startGame() {
+    data.ball.dx, data.ball.dy, data.paddle.dx, data.paddle.dy = ballTemp[0], ballTemp[1], paddleTemp[0], paddleTemp[1];
+    globalPaused = false;
+    gameTimerInterval = setInterval(timerIncrement, 1000);
+}
+
+function gameToggle() {
+    if (!ballInactive) {
+        if (this.src.toString().includes('pause')) {
+            pauseGame();
+            this.src = this.src.replace('pause', 'start');
+        } else {
+            startGame();
+            this.src = this.src.replace('start', 'pause');
+        }
+    }   
+}
+
+let pauseStartBtn =  document.querySelector('.pauseStartButton');
+console.log(pauseStartBtn);
+pauseStartBtn.addEventListener('click', gameToggle);
 
 //ресет игры
 function reset(restart = false) {
