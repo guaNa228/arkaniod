@@ -2,40 +2,98 @@ import * as data from "./data.js";
 import collide from "./objectsIntersection.js";
 
 //переменные игры
-//let records = localStorage.getItem('records') || {};
-let paddleSpeedIncreesingCoef = 1.03;
-let ballSpeedIncreesingCoef = 1.05;
+let ballAccelerationInput = document.querySelector('input[type="range"]');
 let k = 0;
 let score = 0;
 let defaultScore;
 let gameTimer = 0;
+var ballSpeedIncreesingCoef = parseFloat(localStorage.getItem('acceleration')) || 1.05;
+var paddleSpeedIncreesingCoef = ballSpeedIncreesingCoef/1.019417475728155;
+ballAccelerationInitialSetValue();
 var gameTimerInterval;
 var gameRowsGlobal = parseInt(localStorage.getItem('rows')) || 8;
-var recordsGlobal = JSON.parse(localStorage.getItem('records')) || [100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000];
+var recordsGlobal = JSON.parse(localStorage.getItem('records')) || [
+    [100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000], 
+    [100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000], 
+    [100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000], 
+    [100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000], 
+    [100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000],
+    [100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000],
+    [100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000],
+    [100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000],
+    [100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000],
+    [100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000],
+    [100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000],
+    [100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000],
+    [100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000],
+    [100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000],
+    [100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000]];
 var endScreen = document.querySelector('.endScreen');
 var ballTemp = [];
 var paddleTemp = [];
 var globalPaused = false;
 var ballInactive = true;
-console.log(gameRowsGlobal);
+var isAccelerationChanged = false;
+
+//Manual visit animation
+var manualVisited = JSON.parse(localStorage.getItem('manual')) || false;
+let startInfoBlock = document.querySelector('.startInfo');
+if (manualVisited==false) {
+    startInfoBlock.classList.add('virgin');
+}
+
+
 //нажатие на клавиши
 document.addEventListener("keydown", function(e) {
     if (e.which==37) {
         data.paddle.dx = -3*(paddleSpeedIncreesingCoef**k);
     }
-
     else if(e.which==39) {
         data.paddle.dx = 3*(paddleSpeedIncreesingCoef**k);
     }
-
     else if(data.ball.dx==0 && data.ball.dy==0 && e.which==32) {
-        if (endScreen.classList.contains('active')) {
+        if (endScreen.classList.contains('active') || isAccelerationChanged) {
             reset(true);
         }
+        isAccelerationChanged = false;
         ballInactive = false;
         data.ball.dx = data.ball.speed;
         data.ball.dy = data.ball.speed;
         gameTimerInterval = setInterval(timerIncrement, 1000);
+    }
+    else if(e.which==16) {
+        gameToggle();
+    }
+    else if(e.which==82) {
+        console.log(1212);
+        reset(true);
+    }
+    else if(e.which==27) {
+        if (globalPaused || ballInactive) {
+            toggleManual();
+        }   
+    }
+    else if(e.which==87) {
+        rowsUp();
+    }
+    else if(e.which==83) {
+        rowsDown();
+    }
+    else if(e.which==87) {
+        rowsUp();
+    }
+    else if(e.which==83) {
+        rowsDown();
+    }
+    else if(e.which==65) {
+        if (ballSpeedIncreesingCoef!=1.01 && !globalPaused) {
+            accelerationDown();
+        }
+    }
+    else if(e.which==68) {
+        if (ballSpeedIncreesingCoef!=1.15 && !globalPaused) {
+            accelerationUp();
+        }
     };
 });
 
@@ -95,7 +153,6 @@ function loop() {
         k = 0;
         ballInactive = true;
         clearInterval(gameTimerInterval);
-        console.log(ballInactive);
     }
 
     //пересечение с платформой
@@ -202,8 +259,10 @@ function timerIncrement() {
 //Сохранить параметры игры
 
 function saveSettings() {
+    localStorage.setItem('acceleration', ballSpeedIncreesingCoef);
     localStorage.setItem('rows', gameRowsGlobal.toString());
     localStorage.setItem('records', JSON.stringify(recordsGlobal));
+    localStorage.setItem('manual', JSON.stringify(manualVisited));
 }
 
 //Регуляровка рядов
@@ -212,13 +271,17 @@ let rowsUpButton = document.querySelector('img.rowsIncreaseBtn');
 let rowsDownButton = document.querySelector('img.rowsDecreaseBtn');
 let rowsTitle = document.querySelector('.rowsRegulation .keys span')
 function rowsUp() {
-    gameRowsGlobal = Math.min(data.height, gameRowsGlobal+1);
-    reset(true);
+    if (!globalPaused) {
+        gameRowsGlobal = Math.min(data.height, gameRowsGlobal+1);
+        reset(true);
+    }
 }
 
 function rowsDown() {
-    gameRowsGlobal = Math.max(1, gameRowsGlobal-1);
-    reset(true);
+    if (!globalPaused) {
+        gameRowsGlobal = Math.max(1, gameRowsGlobal-1);
+        reset(true);
+    }
 }
 
 function rowsTitleUpdate() {
@@ -233,7 +296,8 @@ rowsDownButton.addEventListener('click', rowsDown);
 let recordTitle = document.querySelector('.record span');
 
 function recordDisplay(animated) {
-    recordTitle.textContent = recordsGlobal[gameRowsGlobal-1]!=100000 ? getTimeForm(recordsGlobal[gameRowsGlobal-1]) : '—';
+    console.log(Math.round((ballSpeedIncreesingCoef - 1)*100));
+    recordTitle.textContent = recordsGlobal[Math.round((ballSpeedIncreesingCoef - 1)*100) - 1][gameRowsGlobal-1]!=100000 ? getTimeForm(recordsGlobal[Math.round((ballSpeedIncreesingCoef - 1)*100) - 1][gameRowsGlobal-1]) : '—';
     if (animated) {
         recordTitle.classList.add('animated');
         setTimeout(() => {
@@ -243,8 +307,7 @@ function recordDisplay(animated) {
 }
 
 function newRecord() {
-    if (gameTimer < recordsGlobal[gameRowsGlobal-1]) recordsGlobal[gameRowsGlobal-1] = gameTimer;
-    console.log(recordsGlobal[gameRowsGlobal-1]);
+    if (gameTimer < recordsGlobal[Math.round((ballSpeedIncreesingCoef - 1)*100) - 1][gameRowsGlobal-1]) recordsGlobal[Math.round((ballSpeedIncreesingCoef - 1)*100) - 1][gameRowsGlobal-1] = gameTimer;
 }
 
 //Экран конца игры
@@ -253,8 +316,8 @@ let endIcon = document.querySelector('img.endIcon');
 let endTitle = document.querySelector('p.recordTitle');
 let endDescription = document.querySelector('p.recordDescription')
 function endScreenFillUp() {
-    let recordRatio = (recordsGlobal[gameRowsGlobal]/gameTimer)*100;
-    if (recordRatio>100 || recordsGlobal[gameRowsGlobal]==10000) {
+    let recordRatio = (recordsGlobal[Math.round((ballSpeedIncreesingCoef - 1)*100) - 1][gameRowsGlobal-1]/gameTimer)*100;
+    if (recordRatio>100 || recordsGlobal[Math.round((ballSpeedIncreesingCoef - 1)*100) - 1][gameRowsGlobal-1]==10000) {
         endIcon.src = data.recordsData.newRecord[0];
         endTitle.textContent = data.recordsData.newRecord[1];
         endDescription.textContent = data.recordsData.newRecord[2];
@@ -295,41 +358,46 @@ function closeEndScreen() {
 
 //game pause and start
 
+let pauseStartBtn =  document.querySelector('.pauseStartButton');
+
 function pauseGame() {
     ballTemp = [data.ball.dx, data.ball.dy];
     paddleTemp = [data.paddle.dx, data.paddle.dy];
     data.ball.dx, data.ball.dy, data.paddle.dx, data.paddle.dy = 0, 0, 0, 0;
     globalPaused = true;
+    disableBallAccelerationInput();
     clearInterval(gameTimerInterval);
 }
 
 function startGame() {
     data.ball.dx, data.ball.dy, data.paddle.dx, data.paddle.dy = ballTemp[0], ballTemp[1], paddleTemp[0], paddleTemp[1];
     globalPaused = false;
+    enableBallAccelerationInput();
     gameTimerInterval = setInterval(timerIncrement, 1000);
 }
 
+
+
 function gameToggle() {
     if (!ballInactive) {
-        if (this.src.toString().includes('pause')) {
+        if (pauseStartBtn.getAttribute('src').toString().includes('pause')) {
+            ballAccelerationInput.disabled = false;
             pauseGame();
-            this.src = this.src.replace('pause', 'start');
+            pauseStartBtn.src = pauseStartBtn.src.replace('pause', 'start');
         } else {
             startGame();
-            this.src = this.src.replace('start', 'pause');
+            pauseStartBtn.src = pauseStartBtn.src.replace('start', 'pause');
         }
     }   
 }
 
-let pauseStartBtn =  document.querySelector('.pauseStartButton');
-console.log(pauseStartBtn);
+
 pauseStartBtn.addEventListener('click', gameToggle);
 
 //ресет игры
 function reset(restart = false) {
     closeEndScreen();
     if (restart) data.ball.y = 100000000;
-    console.log(11);
     score = 0;
     gameTimer = 0;
     data.resetGame(gameRowsGlobal);
@@ -337,11 +405,86 @@ function reset(restart = false) {
     rowsTitleUpdate();
     scoreDisplay();
     recordDisplay(false);
+    ballAccelerationDisplay();
+    isAccelerationChanged = false;
     timerTitle.textContent = '00:00';
 }
 let resetGameButton = document.querySelectorAll('.resetBtn');
 resetGameButton.forEach((item) => item.addEventListener('click', reset), false);
 
+//изменение ускорения шарика
+
+let ballAccelerationBlock = document.querySelector('.ballAcceleration p span')
+
+function ballAccelerationInitialSetValue() {
+    ballAccelerationInput.value = ((ballSpeedIncreesingCoef-1)*100).toString();
+}
+
+function ballAccelerationDisplay() {
+    ballAccelerationBlock.textContent = ballSpeedIncreesingCoef;
+    console.log(ballSpeedIncreesingCoef);
+}
+
+function setAcceleration() {
+    if (!globalPaused) { 
+        isAccelerationChanged = true;
+        console.log('value = ' + ballAccelerationInput.value);
+        console.log(parseFloat((parseInt(ballAccelerationInput.value)*0.01).toFixed(2)))
+        ballSpeedIncreesingCoef = parseFloat((parseInt(ballAccelerationInput.value)*0.01+1).toFixed(2));
+        paddleSpeedIncreesingCoef = ballSpeedIncreesingCoef/1.019417475728155;
+        this.blur();
+        reset(true);
+    }
+}
+
+function accelerationUp() {
+    ballSpeedIncreesingCoef+=0.01;
+    ballSpeedIncreesingCoef = parseFloat(ballSpeedIncreesingCoef.toFixed(2));
+    paddleSpeedIncreesingCoef = ballSpeedIncreesingCoef/1.019417475728155;
+    ballAccelerationInitialSetValue();
+    reset(true);
+}
+
+function accelerationDown() {
+    ballSpeedIncreesingCoef-=0.01;
+    ballSpeedIncreesingCoef = parseFloat(ballSpeedIncreesingCoef.toFixed(2));
+    paddleSpeedIncreesingCoef = ballSpeedIncreesingCoef/1.019417475728155;
+    ballAccelerationInitialSetValue();
+    reset(true);
+}
+
+function disableBallAccelerationInput() {
+    ballAccelerationInput.disabled = true;
+}
+
+function enableBallAccelerationInput() {
+    ballAccelerationInput.disabled = false;
+}
+
+ballAccelerationInput.onchange = setAcceleration;
+
+//ManualReveal
+
+let openGameManualButton = document.querySelector('.info_button');
+let gameManualBlock = document.querySelector('.game_manual');
+let closeGameManualButton = document.querySelector('img.closeManualButton');
+
+openGameManualButton.addEventListener('click', toggleManual);
+closeGameManualButton.addEventListener('click', toggleManual);
+
+function toggleManual() {
+    gameManualBlock.classList.toggle('active');
+    if (manualVisited==false) {
+        setTimeout(() => {
+            startInfoBlock.classList.remove('virgin');
+            manualVisited = true;
+        }, 500);
+    }
+}
+
+
+
+//game
 reset();
 requestAnimationFrame(loop);
-window.addEventListener('beforeunload', saveSettings)
+window.addEventListener('beforeunload', saveSettings);

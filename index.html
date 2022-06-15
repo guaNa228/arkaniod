@@ -8,6 +8,41 @@
     <link rel="stylesheet" href="style/style.css">
 </head>
 <body>
+    <span class="description">
+        You can't play arkanoid on such small screen, use Ctrl+- or Ctrl+WheelUp to Zoom back
+    </span>
+    <div class="game_manual">
+        <div class="hotkeys">
+            <h2>Hotkeys</h2>
+            <p><b>SPACE</b> - Spawn the ball/Start game</p>
+            <p><b>R</b> - Restart game</p>
+            <p><b>SHIFT</b> - Pause/Resume game</p>
+            <p><b>ESC</b> - Toggle manual</p>
+            <p><b>W/S</b> - Increase/Decrease number of rows</p>
+            <p><b>A/D</b> - Decrease/Increase ball acceleration</p>
+            <p><b><img src="assets/icons/left_gold.png">/<img src="assets/icons/right_gold.png"></b> - Move the paddle</p>
+            <img title="Return to game" class="closeManualButton" src="assets/icons/left.png" alt="">
+        </div>
+        <div class="rules">
+            <h2>Rules</h2>
+            <p>The game globally has 2 states: <span class="red">gaming</span> and <span class="green">setting</span></p>
+            <p><span class="red">Gaming</span> state is when you can see the ball on the field</p>
+            <p>And the <span class="green">setting</span> state is when there is no ball on the playing field</p>
+            <p>Also <span class="red">gaming</span> state is divided onto 2 substates <span class="pink">active</span> and <span class="brown">paused</span></p>
+            <p><span class="pink">Active</span> state is when the ball moves, <span class="brown">paused</span> state is when the ball stands still</p>
+            <p>During <span class="brown">paused</span> state you can just resume the game</p>
+            <p>During <span class="pink">active</span> state you can pause the game and move the paddle</p>
+            <p>To enter <span class="green">setting</span> state from <span class="red">gaming</span> state you can restart the game, or increase or decrease the number of rows or ball acceleration</p>
+            <p>During <span class="green">setting</span> state you can increase or decrease the number of rows or ball acceleration</p>
+            <div class="title">
+                <em class="lower">A</em>r<em class="upper">k</em>a<em class="semi-lower">n</em><em class="lower">o</em><em class="semi-lower">i</em>d
+            </div>
+        </div>
+    </div>
+    <div class="startInfo">
+        <img  class="info_button" title="Game manual" src="assets/icons/info.png" alt="">
+        <p>READ THE MANUAL</p>
+    </div>
     <div class="game">
         <div class="score">
             <p class="scoreTitle">SCORE: <span>0/112</span></p>
@@ -17,13 +52,15 @@
                 <span></span>
             </div>
         </div>
-        <div class="endScreen">
-            <img src="" alt="" class="endIcon">
-            <p class="recordTitle"></p>
-            <p class="recordDescription"></p>
-            <img class="resetBtn" src="assets/icons/reset.png" alt="">
+        <div class="main">
+            <div class="endScreen">
+                <img src="" alt="" class="endIcon">
+                <p class="recordTitle"></p>
+                <p class="recordDescription"></p>
+                <img class="resetBtn" src="assets/icons/reset.png" alt="">
+            </div>
+            <canvas width="400" height="500" id="game"></canvas>
         </div>
-        <canvas width="400" height="500" id="game"></canvas>
         <div class="settings">
             <div class="pauseGame">
                 <p>Pause game:</p>
@@ -40,13 +77,16 @@
                     <span>8</span>
                     <img class="rowsDecreaseBtn" src="assets/icons/down.png" alt="">
                 </div>
-                
+            </div>
+            <div class="ballAcceleration">
+                <p>Ball acceleration: <span></span></p>
+                <input type="range" min="1" max="15" step="1" name="" id="">
             </div>
         </div>
     </div>
-    <div class="title">
-        <em class="lower">A</em>r<em class="upper">k</em>a<em class="semi-lower">n</em><em class="lower">o</em><em class="semi-lower">i</em>d
-    </div>
+    
+
+<!--<script src="js/zoom_ban.js"></script>-->
 <script type="module" src="js/main.js"></script>
 </body>
 </html>
