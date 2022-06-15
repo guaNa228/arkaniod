@@ -396,18 +396,20 @@ pauseStartBtn.addEventListener('click', gameToggle);
 
 //ресет игры
 function reset(restart = false) {
-    closeEndScreen();
-    if (restart) data.ball.y = 100000000;
-    score = 0;
-    gameTimer = 0;
-    data.resetGame(gameRowsGlobal);
-    defaultScore = data.bricks.length;
-    rowsTitleUpdate();
-    scoreDisplay();
-    recordDisplay(false);
-    ballAccelerationDisplay();
-    isAccelerationChanged = false;
-    timerTitle.textContent = '00:00';
+    if (!globalPaused) {
+        closeEndScreen();
+        if (restart) data.ball.y = 100000000;
+        score = 0;
+        gameTimer = 0;
+        data.resetGame(gameRowsGlobal);
+        defaultScore = data.bricks.length;
+        rowsTitleUpdate();
+        scoreDisplay();
+        recordDisplay(false);
+        ballAccelerationDisplay();
+        isAccelerationChanged = false;
+        timerTitle.textContent = '00:00';
+    }
 }
 let resetGameButton = document.querySelectorAll('.resetBtn');
 resetGameButton.forEach((item) => item.addEventListener('click', reset), false);
