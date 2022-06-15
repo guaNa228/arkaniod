@@ -190,7 +190,6 @@ function loop() {
                     data.ball.dx*=-1;
                 }
             }
-            //console.log(data.ball.dx, data.ball.dy);
             score+=1;
             scoreDisplay();
             
@@ -295,7 +294,6 @@ rowsDownButton.addEventListener('click', rowsDown);
 let recordTitle = document.querySelector('.record span');
 
 function recordDisplay(animated) {
-    console.log(Math.round((ballSpeedIncreesingCoef - 1)*100));
     recordTitle.textContent = recordsGlobal[Math.round((ballSpeedIncreesingCoef - 1)*100) - 1][gameRowsGlobal-1]!=100000 ? getTimeForm(recordsGlobal[Math.round((ballSpeedIncreesingCoef - 1)*100) - 1][gameRowsGlobal-1]) : '—';
     if (animated) {
         recordTitle.classList.add('animated');
@@ -423,14 +421,11 @@ function ballAccelerationInitialSetValue() {
 
 function ballAccelerationDisplay() {
     ballAccelerationBlock.textContent = ballSpeedIncreesingCoef;
-    console.log(ballSpeedIncreesingCoef);
 }
 
 function setAcceleration() {
     if (!globalPaused) { 
         isAccelerationChanged = true;
-        console.log('value = ' + ballAccelerationInput.value);
-        console.log(parseFloat((parseInt(ballAccelerationInput.value)*0.01).toFixed(2)))
         ballSpeedIncreesingCoef = parseFloat((parseInt(ballAccelerationInput.value)*0.01+1).toFixed(2));
         paddleSpeedIncreesingCoef = ballSpeedIncreesingCoef/1.019417475728155;
         this.blur();

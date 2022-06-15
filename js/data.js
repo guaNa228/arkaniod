@@ -8,8 +8,6 @@ export const recordsData = {
     'newRecord': ['assets/icons/results/record.png', 'WOW', 'You have beaten your record in this mode, but there is no limit to perfection', 'rgba(16, 14, 238, .7)']
 }
 
-//export const maxK = [500, 50, ]
-
 const level = [
     ['P','P','P','P','P','P','P','P','P','P','P','P','P','P'],
     ['P','P','P','P','P','P','P','P','P','P','P','P','P','P'],
