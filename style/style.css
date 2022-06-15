@@ -225,6 +225,76 @@ img.resetBtn {
     margin-bottom: 50px;
 }
 
+@keyframes unpausingAnimation {
+    0% {
+        color: white;
+    }
+    5% {
+        color: gold;
+    }
+    10% {
+        color: white;
+    }
+    15% {
+        color: gold;
+    }
+    20% {
+        color: white;
+    }
+    25% {
+        color: gold;
+    }
+    30% {
+        color: white;
+    }
+    35% {
+        color: gold;
+    }
+    40% {
+        color: white;
+    }
+    45% {
+        color: gold;
+    }
+    50% {
+        color: white;
+    }
+    55% {
+        color: white;
+    }
+    60% {
+        color: gold;
+    }
+    65% {
+        color: white;
+    }
+    70% {
+        color: gold;
+    }
+    75% {
+        color: white;
+    }
+    80% {
+        color: gold;
+    }
+    85% {
+        color: white;
+    }
+    90% {
+        color: gold;
+    }
+    95% {
+        color: white;
+    }
+    100% {
+        color: gold;
+    }
+}
+
+.pauseGame.unpausing p{
+    animation: unpausingAnimation 2s ease-in-out;
+}
+
 .settings .pauseGame p {
     font-size: 30px;
 }
@@ -254,6 +324,29 @@ img.pauseStartButton {
 
 .rowsRegulation .keys span {
     font-size: 50px;
+}
+
+.gameGoal {
+    position: absolute;
+    bottom: 3%;
+    left: 65%;
+    border: 3px solid gold;
+    width: 30%;
+    float: right;
+    margin: 40px auto 0px;
+    height: auto;
+    padding: 5px;
+}
+
+.gameGoal p {
+    display: inline;
+    margin: 0;
+    line-height: 40px;
+    color: white;
+}
+
+.gameGoal p b{
+    color: gold;
 }
 
 body {
@@ -303,7 +396,7 @@ span.description {
     display: inline;
     height: 150px;
     position: absolute;
-    bottom: 9%;
+    bottom: 5%;
     left: 50%;
     transform: translateX(-50%);
     text-align: center;

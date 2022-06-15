@@ -34,7 +34,7 @@ var paddleTemp = [];
 var globalPaused = false;
 var ballInactive = true;
 var isAccelerationChanged = false;
-
+var manualOpened = false;
 //Manual visit animation
 var manualVisited = JSON.parse(localStorage.getItem('manual')) || false;
 let startInfoBlock = document.querySelector('.startInfo');
@@ -45,56 +45,55 @@ if (manualVisited==false) {
 
 //нажатие на клавиши
 document.addEventListener("keydown", function(e) {
-    if (e.which==37) {
-        data.paddle.dx = -3*(paddleSpeedIncreesingCoef**k);
+    if(e.which==27) {
+        toggleManual();
     }
-    else if(e.which==39) {
-        data.paddle.dx = 3*(paddleSpeedIncreesingCoef**k);
-    }
-    else if(data.ball.dx==0 && data.ball.dy==0 && e.which==32) {
-        if (endScreen.classList.contains('active') || isAccelerationChanged) {
+    else if (!manualOpened) {
+        if (e.which==37) {
+            data.paddle.dx = -3*(paddleSpeedIncreesingCoef**k);
+        }
+        else if(e.which==39) {
+            data.paddle.dx = 3*(paddleSpeedIncreesingCoef**k);
+        }
+        else if(data.ball.dx==0 && data.ball.dy==0 && e.which==32) {
+            if (endScreen.classList.contains('active') || isAccelerationChanged) {
+                reset(true);
+            }
+            isAccelerationChanged = false;
+            ballInactive = false;
+            data.ball.dx = data.ball.speed;
+            data.ball.dy = data.ball.speed;
+            gameTimerInterval = setInterval(timerIncrement, 1000);
+        }
+        else if(e.which==16) {
+            gameToggle();
+        }
+        else if(e.which==82) {
             reset(true);
         }
-        isAccelerationChanged = false;
-        ballInactive = false;
-        data.ball.dx = data.ball.speed;
-        data.ball.dy = data.ball.speed;
-        gameTimerInterval = setInterval(timerIncrement, 1000);
-    }
-    else if(e.which==16) {
-        gameToggle();
-    }
-    else if(e.which==82) {
-        console.log(1212);
-        reset(true);
-    }
-    else if(e.which==27) {
-        if (globalPaused || ballInactive) {
-            toggleManual();
-        }   
-    }
-    else if(e.which==87) {
-        rowsUp();
-    }
-    else if(e.which==83) {
-        rowsDown();
-    }
-    else if(e.which==87) {
-        rowsUp();
-    }
-    else if(e.which==83) {
-        rowsDown();
-    }
-    else if(e.which==65) {
-        if (ballSpeedIncreesingCoef!=1.01 && !globalPaused) {
-            accelerationDown();
+        else if(e.which==87) {
+            rowsUp();
+        }
+        else if(e.which==83) {
+            rowsDown();
+        }
+        else if(e.which==87) {
+            rowsUp();
+        }
+        else if(e.which==83) {
+            rowsDown();
+        }
+        else if(e.which==65) {
+            if (ballSpeedIncreesingCoef!=1.01 && !globalPaused) {
+                accelerationDown();
+            }
+        }
+        else if(e.which==68) {
+            if (ballSpeedIncreesingCoef!=1.15 && !globalPaused) {
+                accelerationUp();
+            }
         }
     }
-    else if(e.which==68) {
-        if (ballSpeedIncreesingCoef!=1.15 && !globalPaused) {
-            accelerationUp();
-        }
-    };
 });
 
 document.addEventListener("keyup", function(e) {
@@ -379,7 +378,7 @@ function startGame() {
 
 
 function gameToggle() {
-    if (!ballInactive) {
+    if (!ballInactive && !manualOpened) {
         if (pauseStartBtn.getAttribute('src').toString().includes('pause')) {
             ballAccelerationInput.disabled = false;
             pauseGame();
@@ -481,6 +480,21 @@ function toggleManual() {
             startInfoBlock.classList.remove('virgin');
             manualVisited = true;
         }, 500);
+    }
+    if (globalPaused && !ballInactive && manualOpened) {
+        pauseStartBtn.parentElement.classList.add('unpausing');
+        setTimeout(() => {
+            manualOpened = false;
+            gameToggle();
+            pauseStartBtn.parentElement.classList.remove('unpausing');
+        }, 2000);
+    }
+    else if (!globalPaused && !ballInactive && !manualOpened) {
+        gameToggle();
+        manualOpened = true;
+    }
+    else {
+        manualOpened = !manualOpened;
     }
 }
 
