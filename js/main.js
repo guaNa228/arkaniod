@@ -173,7 +173,7 @@ function loop() {
 
             data.bricks.splice(i, 1);
 
-            if (k<=30) {
+            if ((Math.abs(data.ball.dx)+Math.abs(data.ball.dy))/2<5) {
                 if (data.ball.y+data.ball.height-data.ball.speed <= tempBrick.y ||
                     data.ball.y >= tempBrick.y + tempBrick.height - data.ball.speed) {
                         data.ball.dy *= -ballSpeedIncreesingCoef;
